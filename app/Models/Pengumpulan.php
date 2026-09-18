@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pengumpulan extends Model
 {
+    protected $table = 'pengumpulans';
+
     protected $fillable = ['siswa_id', 'tugas_id', 'file_tugas', 'waktu_upload', 'status', 'nilai', 'komentar'];
 
-    protected $casts = ['waktu_upload' => 'datetime'];
+    protected $casts = [
+        'waktu_upload' => 'datetime',
+    ];
 
     public function siswa()
     {
@@ -22,7 +26,7 @@ class Pengumpulan extends Model
 
     public function getTerlambatAttribute(): bool
     {
-        if (! $this->waktu_upload || ! $this->tugas) {
+        if (!$this->waktu_upload || !$this->tugas) {
             return false;
         }
 

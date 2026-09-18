@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kelas extends Model
 {
-     protected $fillable = ['nama_kelas'];
+    protected $table = 'kelas';
 
-        public function siswa()
-        {
-            return $this->hasMany(User::class);
-        }
+    protected $fillable = ['nama_kelas'];
 
-        public function tugas()
-        {
-            return $this->hasMany(Tugas::class);
-        }
+    public function siswa()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
 }
