@@ -3,35 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'SimpulTugas')</title>
+    @include('partials.styles')
 </head>
 <body>
-    <header>
-        <strong>SimpulTugas</strong>
-        <span>
-            {{ auth()->user()->name }}
-            <form method="POST" action="{{ route('logout') }}" style="display:inline">
+    <div class="navbar">
+        <span class="brand">SimpulTugas</span>
+        <span class="navbar-right">
+            <span>{{ auth()->user()->name }} &mdash; {{ ucfirst(auth()->user()->role) }}</span>
+            <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit">Keluar</button>
+                <button type="submit">Logout</button>
             </form>
         </span>
-    </header>
+    </div>
 
-    <div style="display:flex">
-        <nav>
+    <div class="layout">
+        <nav class="sidebar">
             @include('partials.sidebar-' . auth()->user()->role)
         </nav>
 
-        <main>
+        <main class="main-content">
             @if (session('status'))
-                <p>{{ session('status') }}</p>
+                <div class="alert alert-status">{{ session('status') }}</div>
             @endif
 
             @if ($errors->any())
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <div class="alert alert-error">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
 
             @yield('content')

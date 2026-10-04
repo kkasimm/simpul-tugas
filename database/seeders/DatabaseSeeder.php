@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'guru',
         ]);
 
-        // relasi guru mengajar mapel di kelas ini — normalnya diatur Admin di menu Kelola Mapel (Tahap 3)
         GuruMapelKelas::create([
             'guru_id' => $guru->id,
             'mapel_id' => $mapel->id,

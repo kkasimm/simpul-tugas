@@ -11,16 +11,16 @@ class TugasController extends Controller
 {
     public function index()
     {
-        $tugas = Tugas::where('guru_id', auth()->id())->with('kelas')->latest()->get();
+        $tugas = Tugas::where('guru_id', auth()->id())->with(['kelas', 'mapel'])->latest()->get();
 
         return view('guru.tugas.index', compact('tugas'));
     }
 
     public function create()
     {
-        $kelasList = $this->kelasDiajar();
+        $penugasanList = $this->penugasanDiajar();
 
-        return view('guru.tugas.create', compact('kelasList'));
+        return view('guru.tugas.create', compact('penugasanList'));
     }
 
     public function store(Request $request)
@@ -29,14 +29,21 @@ class TugasController extends Controller
             'judul' => ['required', 'string', 'max:255'],
             'deskripsi' => ['nullable', 'string'],
             'tenggat_waktu' => ['required', 'date'],
-            'kelas_id' => ['required', 'exists:kelas,id'],
+            'penugasan_id' => ['required', 'exists:guru_mapel_kelas,id'],
+            'status' => ['required', 'in:draft,aktif,selesai'],
         ]);
 
-        abort_unless($this->kelasDiajar()->contains('id', $validated['kelas_id']), 403);
+        $penugasan = $this->penugasanDiajar()->firstWhere('id', (int) $validated['penugasan_id']);
+        abort_unless($penugasan, 403);
 
         Tugas::create([
-            ...$validated,
+            'judul' => $validated['judul'],
+            'deskripsi' => $validated['deskripsi'],
+            'tenggat_waktu' => $validated['tenggat_waktu'],
+            'status' => $validated['status'],
             'guru_id' => auth()->id(),
+            'kelas_id' => $penugasan->kelas_id,
+            'mapel_id' => $penugasan->mapel_id,
         ]);
 
         return redirect()->route('guru.tugas.index')->with('status', 'Tugas berhasil dibuat.');
@@ -46,9 +53,10 @@ class TugasController extends Controller
     {
         abort_unless($tugas->guru_id === auth()->id(), 403);
 
-        $kelasList = $this->kelasDiajar();
+        $penugasanList = $this->penugasanDiajar();
+        $penugasanSaatIni = $penugasanList->first(fn ($p) => $p->kelas_id === $tugas->kelas_id && $p->mapel_id === $tugas->mapel_id);
 
-        return view('guru.tugas.edit', compact('tugas', 'kelasList'));
+        return view('guru.tugas.edit', compact('tugas', 'penugasanList', 'penugasanSaatIni'));
     }
 
     public function update(Request $request, Tugas $tugas)
@@ -59,12 +67,21 @@ class TugasController extends Controller
             'judul' => ['required', 'string', 'max:255'],
             'deskripsi' => ['nullable', 'string'],
             'tenggat_waktu' => ['required', 'date'],
-            'kelas_id' => ['required', 'exists:kelas,id'],
+            'penugasan_id' => ['required', 'exists:guru_mapel_kelas,id'],
+            'status' => ['required', 'in:draft,aktif,selesai'],
         ]);
 
-        abort_unless($this->kelasDiajar()->contains('id', $validated['kelas_id']), 403);
+        $penugasan = $this->penugasanDiajar()->firstWhere('id', (int) $validated['penugasan_id']);
+        abort_unless($penugasan, 403);
 
-        $tugas->update($validated);
+        $tugas->update([
+            'judul' => $validated['judul'],
+            'deskripsi' => $validated['deskripsi'],
+            'tenggat_waktu' => $validated['tenggat_waktu'],
+            'status' => $validated['status'],
+            'kelas_id' => $penugasan->kelas_id,
+            'mapel_id' => $penugasan->mapel_id,
+        ]);
 
         return redirect()->route('guru.tugas.index')->with('status', 'Tugas berhasil diperbarui.');
     }
@@ -78,17 +95,10 @@ class TugasController extends Controller
         return back()->with('status', 'Tugas berhasil dihapus.');
     }
 
-    /**
-     * Daftar kelas tempat guru yang login ini mengajar (dari tabel guru_mapel_kelas,
-     * yang diatur oleh Admin). Guru cuma boleh buat tugas untuk kelas yang dia ajar.
-     */
-    private function kelasDiajar()
+    private function penugasanDiajar()
     {
         return GuruMapelKelas::where('guru_id', auth()->id())
-            ->with('kelas')
-            ->get()
-            ->pluck('kelas')
-            ->unique('id')
-            ->values();
+            ->with(['kelas', 'mapel'])
+            ->get();
     }
 }

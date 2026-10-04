@@ -11,7 +11,8 @@ class GuruController extends Controller
 {
     public function index()
     {
-        $guru = User::where('role', 'guru')->latest()->get();
+        $guru = User::where('role', 'guru')->with('penugasanMengajar.mapel')->latest()->get();
+
         return view('admin.guru.index', compact('guru'));
     }
 
@@ -26,6 +27,7 @@ class GuruController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
+            'jk' => ['required', 'in:L,P'],
         ]);
 
         User::create([
@@ -33,6 +35,7 @@ class GuruController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'guru',
+            'jk' => $validated['jk'],
         ]);
 
         return redirect()->route('admin.guru.index')->with('status', 'Guru berhasil ditambahkan.');
@@ -52,11 +55,13 @@ class GuruController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email,' . $guru->id],
             'password' => ['nullable', 'string', 'min:8'],
+            'jk' => ['required', 'in:L,P'],
         ]);
 
         $guru->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'jk' => $validated['jk'],
             ...(!empty($validated['password']) ? ['password' => Hash::make($validated['password'])] : []),
         ]);
 

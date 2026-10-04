@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    public function editPassword()
+    public function show()
     {
-        return view('profile.password');
+        $user = auth()->user()->load(['kelas', 'penugasanMengajar.mapel', 'penugasanMengajar.kelas']);
+
+        return view('profile.' . $user->role, compact('user'));
     }
 
     public function updatePassword(Request $request)

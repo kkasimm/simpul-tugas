@@ -3,32 +3,38 @@
 @section('title', 'Nilai Tugas')
 
 @section('content')
-    <h1>Pengumpulan: {{ $tugas->judul }}</h1>
+    <h1>Nilai Tugas &mdash; {{ $tugas->judul }}</h1>
 
-    <table border="1" cellpadding="6">
+    <table>
         <tr>
-            <th>Siswa</th>
-            <th>File</th>
-            <th>Waktu Upload</th>
+            <th>Nama Siswa</th>
+            <th>Lihat Tugas</th>
             <th>Status</th>
-            <th>Penilaian</th>
+            <th>Nilai</th>
+            <th>Komentar Guru</th>
+            <th>Save</th>
         </tr>
         @foreach ($pengumpulan as $p)
             <tr>
                 <td>{{ $p->siswa->name }}</td>
-                <td><a href="{{ \Storage::url($p->file_tugas) }}" target="_blank">Lihat File</a></td>
                 <td>
-                    {{ $p->waktu_upload?->format('d M Y H:i') }}
-                    @if ($p->terlambat) (terlambat) @endif
+                    @if ($p->file_tugas)
+                        <a href="{{ \Storage::url($p->file_tugas) }}" target="_blank">{{ basename($p->file_tugas) }}</a>
+                    @else
+                        &mdash;
+                    @endif
                 </td>
-                <td>{{ $p->status }}</td>
                 <td>
-                    <form method="POST" action="{{ route('guru.pengumpulan.update', $p) }}">
+                    <span class="badge badge-{{ $p->status }}">{{ ucfirst($p->status) }}</span>
+                    @if ($p->terlambat) <span class="badge badge-terlambat">Terlambat</span> @endif
+                </td>
+                <td colspan="3">
+                    <form method="POST" action="{{ route('guru.pengumpulan.update', $p) }}" style="display:flex;gap:10px;align-items:center">
                         @csrf
                         @method('PUT')
-                        <input type="number" name="nilai" value="{{ $p->nilai }}" min="0" max="100" style="width:60px" placeholder="Nilai">
-                        <input type="text" name="komentar" value="{{ $p->komentar }}" placeholder="Komentar">
-                        <button type="submit">Simpan</button>
+                        <input type="number" name="nilai" value="{{ $p->nilai }}" min="0" max="100" style="width:70px;margin:0" placeholder="Nilai">
+                        <input type="text" name="komentar" value="{{ $p->komentar }}" placeholder="Tambahkan Komentar" style="margin:0">
+                        <button type="submit" class="btn btn-small">Save</button>
                     </form>
                 </td>
             </tr>
@@ -36,10 +42,10 @@
         @foreach ($siswaBelum as $s)
             <tr>
                 <td>{{ $s->name }}</td>
-                <td colspan="4">Belum mengumpulkan</td>
+                <td colspan="5">Belum mengumpulkan</td>
             </tr>
         @endforeach
     </table>
 
-    <a href="{{ route('guru.tugas.index') }}">&laquo; Kembali</a>
+    <a href="{{ route('guru.tugas.index') }}" class="btn btn-secondary">&laquo; Kembali</a>
 @endsection

@@ -3,26 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Lupa Password - SimpulTugas</title>
+    @include('partials.styles')
 </head>
 <body>
-    <h1>Lupa Password</h1>
+    <div class="auth-page">
+        <div class="auth-card">
+            <h1>SimpulTugas</h1>
+            <p class="subtitle">Lupa Password</p>
 
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
-    @endif
+            @if (session('status'))
+                <p class="info-title">Verifikasi Melalui Email</p>
+                <p class="info-text">
+                    Kami telah mengirimkan email berisi tautan untuk mengatur ulang password Anda.
+                    <br><br>
+                    Silakan cek email dan klik tautan tersebut untuk melanjutkan.
+                </p>
+            @else
+                @if ($errors->any())
+                    <div class="alert alert-error">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-    @if ($errors->any())
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+                <form method="POST" action="{{ route('password.email') }}">
+                    @csrf
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Masukkan email" value="{{ old('email') }}">
+                    <button type="submit" class="btn">Konfirmasi</button>
+                </form>
+            @endif
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}">
-        <button type="submit">Kirim Link Reset</button>
-    </form>
+            <a href="{{ route('login') }}" class="btn btn-secondary">Kembali</a>
+        </div>
+    </div>
 </body>
 </html>
