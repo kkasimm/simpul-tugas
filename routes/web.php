@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
+use App\Http\Controllers\Guru\NilaiController;
 use App\Http\Controllers\Guru\PengumpulanController;
 use App\Http\Controllers\Guru\TugasController as GuruTugasController;
 use App\Http\Controllers\ProfileController;
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('tugas', GuruTugasController::class)->except('show');
         Route::get('/tugas/{tugas}/pengumpulan', [PengumpulanController::class, 'index'])->name('tugas.pengumpulan');
         Route::put('/pengumpulan/{pengumpulan}', [PengumpulanController::class, 'update'])->name('pengumpulan.update');
+        Route::get('/nilai', [NilaiController::class, 'index'])->name('nilai.index');
     });
 
     Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {

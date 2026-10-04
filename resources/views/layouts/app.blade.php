@@ -2,43 +2,34 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'SimpulTugas')</title>
     @include('partials.styles')
 </head>
 <body>
-    <div class="navbar">
-        <span class="brand">SimpulTugas</span>
-        <span class="navbar-right">
+    <nav class="navbar navbar-dark bg-primary px-3">
+        <span class="navbar-brand mb-0">SimpulTugas</span>
+        <div class="d-flex align-items-center gap-3 text-white">
             <span>{{ auth()->user()->name }} &mdash; {{ ucfirst(auth()->user()->role) }}</span>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" class="mb-0">
                 @csrf
-                <button type="submit">Logout</button>
+                <button type="submit" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
             </form>
-        </span>
-    </div>
+        </div>
+    </nav>
 
-    <div class="layout">
-        <nav class="sidebar">
+    <div class="d-flex">
+        <nav class="sidebar" style="width:230px">
             @include('partials.sidebar-' . auth()->user()->role)
         </nav>
 
-        <main class="main-content">
-            @if (session('status'))
-                <div class="alert alert-status">{{ session('status') }}</div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-error">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
+        <main class="flex-fill p-4">
             @yield('content')
         </main>
     </div>
+
+    @include('partials.scripts')
 </body>
 </html>
