@@ -5,8 +5,13 @@
         <h1 class="h4 fw-bold mb-0">Kelola Mata Pelajaran</h1>
         <a href="{{ route('admin.mapel.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Tambah Mapel</a>
     </div>
+
+    <div class="mb-3">
+        <input type="text" class="form-control js-table-search" data-target="#tabelMapel" placeholder="Cari nama mapel...">
+    </div>
+
     <div class="table-responsive">
-        <table class="table table-bordered bg-white shadow-sm align-middle">
+        <table class="table table-bordered bg-white align-middle" id="tabelMapel">
             <thead><tr><th>Nama Mapel</th><th style="width:160px">Aksi</th></tr></thead>
             <tbody>
                 @forelse ($mapel as $m)

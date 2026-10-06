@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pengumpulan;
 use App\Models\Tugas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TugasController extends Controller
 {
@@ -41,7 +42,12 @@ class TugasController extends Controller
             'file_tugas' => ['required', 'file', 'mimes:pdf,doc,docx,zip,jpg,jpeg,png', 'max:5120'],
         ]);
 
-        $path = $request->file('file_tugas')->store('pengumpulan', 'public');
+        $file = $request->file('file_tugas');
+        $namaAsli = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $ekstensi = $file->getClientOriginalExtension();
+        $namaFile = Str::slug($namaAsli) . '-' . now()->format('Ymd-His') . '.' . $ekstensi;
+
+        $path = $file->storeAs('pengumpulan', $namaFile, 'public');
 
         Pengumpulan::updateOrCreate(
             ['tugas_id' => $tugas->id, 'siswa_id' => auth()->id()],

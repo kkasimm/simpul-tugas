@@ -5,8 +5,13 @@
         <h1 class="h4 fw-bold mb-0">Kelola Guru</h1>
         <a href="{{ route('admin.guru.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Tambah Guru</a>
     </div>
+
+    <div class="mb-3">
+        <input type="text" class="form-control js-table-search" data-target="#tabelGuru" placeholder="Cari nama, mapel, atau email...">
+    </div>
+
     <div class="table-responsive">
-        <table class="table table-bordered bg-white shadow-sm align-middle">
+        <table class="table table-bordered bg-white align-middle" id="tabelGuru">
             <thead><tr><th>Nama</th><th>Mata Pelajaran</th><th>Email</th><th style="width:160px">Aksi</th></tr></thead>
             <tbody>
                 @forelse ($guru as $g)

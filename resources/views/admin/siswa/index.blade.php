@@ -5,8 +5,13 @@
         <h1 class="h4 fw-bold mb-0">Kelola Siswa</h1>
         <a href="{{ route('admin.siswa.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Tambah Siswa</a>
     </div>
+
+    <div class="mb-3">
+        <input type="text" class="form-control js-table-search" data-target="#tabelSiswa" placeholder="Cari nama, kelas, atau email...">
+    </div>
+
     <div class="table-responsive">
-        <table class="table table-bordered bg-white shadow-sm align-middle">
+        <table class="table table-bordered bg-white align-middle" id="tabelSiswa">
             <thead><tr><th>Nama</th><th>Kelas</th><th>Email</th><th style="width:160px">Aksi</th></tr></thead>
             <tbody>
                 @forelse ($siswa as $s)

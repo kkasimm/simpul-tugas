@@ -10,12 +10,15 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
+use App\Http\Controllers\Guru\KalenderController as GuruKalenderController;
 use App\Http\Controllers\Guru\NilaiController;
 use App\Http\Controllers\Guru\PengumpulanController;
 use App\Http\Controllers\Guru\TugasController as GuruTugasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
+use App\Http\Controllers\Siswa\KalenderController as SiswaKalenderController;
 use App\Http\Controllers\Siswa\TugasController as SiswaTugasController;
+use App\Http\Middleware\NoCache;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -29,7 +32,9 @@ Route::post('/lupa-password', [ForgotPasswordController::class, 'store'])->name(
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'edit'])->name('password.reset')->middleware('guest');
 Route::post('/reset-password', [ResetPasswordController::class, 'update'])->name('password.update')->middleware('guest');
 
-Route::middleware('auth')->group(function () {
+// NoCache dipasang langsung pakai nama class (FQCN), jadi TIDAK perlu didaftarkan
+// sebagai alias di bootstrap/app.php seperti middleware 'role'.
+Route::middleware(['auth', NoCache::class])->group(function () {
     Route::get('/profil', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/ganti-password', [ProfileController::class, 'updatePassword'])->name('password.change');
 
@@ -48,6 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/tugas/{tugas}/pengumpulan', [PengumpulanController::class, 'index'])->name('tugas.pengumpulan');
         Route::put('/pengumpulan/{pengumpulan}', [PengumpulanController::class, 'update'])->name('pengumpulan.update');
         Route::get('/nilai', [NilaiController::class, 'index'])->name('nilai.index');
+        Route::get('/kalender', [GuruKalenderController::class, 'index'])->name('kalender.index');
     });
 
     Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
@@ -55,5 +61,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/tugas', [SiswaTugasController::class, 'index'])->name('tugas.index');
         Route::get('/tugas/{tugas}', [SiswaTugasController::class, 'show'])->name('tugas.show');
         Route::post('/tugas/{tugas}', [SiswaTugasController::class, 'store'])->name('tugas.store');
+        Route::get('/kalender', [SiswaKalenderController::class, 'index'])->name('kalender.index');
     });
 });

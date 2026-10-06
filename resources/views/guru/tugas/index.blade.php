@@ -3,7 +3,7 @@
 @section('content')
     <h1 class="h4 fw-bold mb-3">Kelola Tugas</h1>
 
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
         <div class="card-body">
             <p class="fw-semibold">Buat Tugas Baru</p>
             <form method="POST" action="{{ route('guru.tugas.store') }}">
@@ -49,9 +49,12 @@
         </div>
     </div>
 
-    <p class="fw-semibold">Tugas</p>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <p class="fw-semibold mb-0">Tugas</p>
+        <input type="text" class="form-control js-table-search" data-target="#tabelTugas" placeholder="Cari judul, kelas, atau mapel..." style="max-width:280px">
+    </div>
     <div class="table-responsive">
-        <table class="table table-bordered bg-white shadow-sm align-middle">
+        <table class="table table-bordered bg-white align-middle" id="tabelTugas">
             <thead>
                 <tr>
                     <th>Nama Tugas</th><th>Kelas</th><th>Mata Pelajaran</th><th>Tanggal Pengumpulan</th><th>Status</th><th>Aksi</th>

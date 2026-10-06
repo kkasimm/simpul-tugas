@@ -12,8 +12,9 @@ class TugasController extends Controller
     public function index()
     {
         $tugas = Tugas::where('guru_id', auth()->id())->with(['kelas', 'mapel'])->latest()->get();
+        $penugasanList = $this->penugasanDiajar();
 
-        return view('guru.tugas.index', compact('tugas'));
+        return view('guru.tugas.index', compact('tugas', 'penugasanList'));
     }
 
     public function create()

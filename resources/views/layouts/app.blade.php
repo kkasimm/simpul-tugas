@@ -7,7 +7,7 @@
     @include('partials.styles')
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-primary px-3">
+    <nav class="navbar navbar-dark px-3">
         <span class="navbar-brand mb-0">SimpulTugas</span>
         <div class="d-flex align-items-center gap-3 text-white">
             <span>{{ auth()->user()->name }} &mdash; {{ ucfirst(auth()->user()->role) }}</span>
@@ -31,5 +31,6 @@
     </div>
 
     @include('partials.scripts')
+    @stack('scripts')
 </body>
 </html>
